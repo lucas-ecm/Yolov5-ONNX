@@ -6,29 +6,41 @@ import cv2
 from cvu.detector.yolov5 import Yolov5 as Yolov5Onnx
 from vidsz.opencv import Reader, Writer
 from cvu.utils.google_utils import gdrive_download
+from timeit import default_timer as timer
 
-CLASSES = []
+CLASSES = [
+    'missing_hole',
+    'mouse_bite',
+    'open_circuit',
+    'short',
+    'spur',
+    'spurious_copper',
+]
 
-def detect_image(device, weight, image_path, output_image):
-    # load model
-    model = Yolov5Onnx(classes=CLASSES,
-                       backend="onnx",
-                       weight=weight,
-                       device=device)
-
+def detect_image(model, image_path, output_image):
     # read image
+    start = timer()
     image = cv2.imread(image_path)
+    end = timer()
+    preprocess_time = end - start
 
     # inference
+    start = timer()
     preds = model(image)
     print(preds)
-
+    end = timer()
+    inference_time = end - start
+    
     # draw image
+    start = timer()
     preds.draw(image)
 
     # write image
     cv2.imwrite(output_image, image)
+    end = timer()
+    postprocess_time = end - start
 
+    return preprocess_time, inference_time, postprocess_time
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -37,32 +49,56 @@ if __name__ == "__main__":
                         default='yolov5s',
                         help='onnx weights path')
 
-    parser.add_argument('--input',
+    parser.add_argument('--input_dir',
                         type=str,
                         default='people.mp4',
-                        help='path to input video or image file')
+                        help='complete path to input files dir')
 
-    parser.add_argument('--output',
+    parser.add_argument('--output_dir',
                         type=str,
                         default='people_out.mp4',
-                        help='name of output video or image file')
+                        help='complete path to output files dir')
 
     parser.add_argument('--device', type=str, default='cpu', help='cpu or gpu')
 
     opt = parser.parse_args()
 
-    # image file
-    input_ext = os.path.splitext(opt.input)[-1]
-    output_ext = os.path.splitext(opt.output)[-1]
+    # inputs_list = []
+    # outputs_list = []
+    count = 0
+    preprocess_time = 0
+    inference_time = 0
+    postprocess_time = 0
 
-    if input_ext in (".jpg", ".jpeg", ".png"):
-        if output_ext not in ((".jpg", ".jpeg", ".png")):
-            opt.output = opt.output.replace(output_ext, input_ext)
-        detect_image(opt.device, opt.weights, opt.input, opt.output)
+    model = Yolov5Onnx(classes=CLASSES,
+           backend="onnx",
+           weight=opt.weights,
+           device=opt.device)
+    
+    for filename in os.listdir(opt.input_dir):
+        print(f'Detecting image {count}: {filename}')
+        count += 1
+        # images_list.append(filename)
+        output = filename.split('/')[-1]
+        output = os.path.join(opt.output_dir, output)
 
-    # video file
-    else:
-        if not os.path.exists(opt.input) and opt.input == 'people.mp4':
-            gdrive_download("1rioaBCzP9S31DYVh-tHplQ3cgvgoBpNJ", "people.mp4")
+        curr_pre_time, curr_inf_time, curr_post_time = detect_image(
+            model, filename, output
+        )
 
-        detect_video(opt.device, opt.weights, opt.input, opt.output)
+        preprocess_time += curr_pre_time
+        inference_time += curr_inf_time
+        postprocess_time += curr_post_time
+
+    print(f'Preprocess_time: {preprocess_time}')
+    print(f'Inference_time: {inference_time}')
+    print(f'Postprocess_time: {postrocess_time}')
+
+
+
+        
+        
+        
+
+    
+
