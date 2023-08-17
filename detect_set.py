@@ -79,11 +79,12 @@ if __name__ == "__main__":
         print(f'Detecting image {count}: {filename}')
         count += 1
         # images_list.append(filename)
-        output = filename.split('/')[-1]
+        stripped_name = filename.split('/')[-1]
+        input = os.path.join(opt.input_dir, output)
         output = os.path.join(opt.output_dir, output)
 
         curr_pre_time, curr_inf_time, curr_post_time = detect_image(
-            model, filename, output
+            model, input, output
         )
 
         preprocess_time += curr_pre_time
