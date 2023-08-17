@@ -93,7 +93,7 @@ if __name__ == "__main__":
 
     print(f'Preprocess_time: {preprocess_time}')
     print(f'Inference_time: {inference_time}')
-    print(f'Postprocess_time: {postrocess_time}')
+    print(f'Postprocess_time: {postprocess_time}')
 
 
 
