@@ -80,8 +80,8 @@ if __name__ == "__main__":
         count += 1
         # images_list.append(filename)
         stripped_name = filename.split('/')[-1]
-        input = os.path.join(opt.input_dir, output)
-        output = os.path.join(opt.output_dir, output)
+        input = os.path.join(opt.input_dir, filename)
+        output = os.path.join(opt.output_dir, filename)
 
         curr_pre_time, curr_inf_time, curr_post_time = detect_image(
             model, input, output
