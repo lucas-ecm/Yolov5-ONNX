@@ -60,6 +60,7 @@ if __name__ == "__main__":
                         help='complete path to output files dir')
 
     parser.add_argument('--device', type=str, default='cpu', help='cpu or gpu')
+    parser.add_argument('--max_iters', type=int, default=None, help='max_iterations')
 
     opt = parser.parse_args()
 
@@ -90,6 +91,9 @@ if __name__ == "__main__":
         preprocess_time += curr_pre_time
         inference_time += curr_inf_time
         postprocess_time += curr_post_time
+
+    if args.max_iters and count == args.max_iters:
+        break
 
     print(f'Preprocess_time: {preprocess_time}')
     print(f'Inference_time: {inference_time}')
