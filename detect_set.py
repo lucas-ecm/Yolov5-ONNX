@@ -60,6 +60,7 @@ if __name__ == "__main__":
                         help='complete path to output files dir')
 
     parser.add_argument('--device', type=str, default='cpu', help='cpu or gpu')
+    parser.add_argument('--backend', type=str, default='onnx', help='onnx or tflite')
     parser.add_argument('--max_iters', type=int, default=None, help='max_iterations')
 
     opt = parser.parse_args()
@@ -72,7 +73,7 @@ if __name__ == "__main__":
     postprocess_time = 0
 
     model = Yolov5Onnx(classes=CLASSES,
-           backend="onnx",
+           backend=opt.backend,
            weight=opt.weights,
            device=opt.device)
     
