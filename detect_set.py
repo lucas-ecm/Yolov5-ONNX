@@ -92,8 +92,8 @@ if __name__ == "__main__":
         inference_time += curr_inf_time
         postprocess_time += curr_post_time
 
-    if args.max_iters and count == args.max_iters:
-        break
+        if args.max_iters and count == args.max_iters:
+            break
 
     print(f'Preprocess_time: {preprocess_time}')
     print(f'Inference_time: {inference_time}')
