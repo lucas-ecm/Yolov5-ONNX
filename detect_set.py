@@ -94,8 +94,8 @@ if __name__ == "__main__":
             model, input, output
         )
 
-        print('The CPU usage is: ', psutil.cpu_percent(2.5))
-        cpu_pctgs.append(psutil.cpu_percent(2.5))
+        print('The CPU usage is: ', psutil.cpu_percent())
+        cpu_pctgs.append(psutil.cpu_percent())
 
         # Getting % usage of virtual_memory ( 3rd field)
         print('RAM memory % used:', psutil.virtual_memory()[2])
@@ -116,9 +116,9 @@ if __name__ == "__main__":
     print(f'Inference_time: {inference_time}')
     print(f'Postprocess_time: {postprocess_time}')
 
-    print(f'Avg cpu load: {np.mean(cpu_pctgs)}')
-    print(f'Avg ram load: {np.mean(ram_pctgs)}')
-    print(f'Avg ram load [GB]: {np.mean(ram_totals)}')
+    print(f'Avg cpu load: {np.mean(cpu_pctgs[1:])}')
+    print(f'Avg ram load: {np.mean(ram_pctgs[1:])}')
+    print(f'Avg ram load [GB]: {np.mean(ram_totals[1:])}')
 
 
 
