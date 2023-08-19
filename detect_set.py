@@ -117,8 +117,16 @@ if __name__ == "__main__":
     print(f'Postprocess_time: {postprocess_time}')
 
     print(f'Avg cpu load: {np.mean(cpu_pctgs[1:])}')
+    # Getting loadover15 minutes
+    load1, load5, load15 = psutil.getloadavg()
+     
+    cpu_usage = (load1/os.cpu_count()) * 100
+     
+    print("Avg cpu usage (getloadavg) is : ", cpu_usage)
     print(f'Avg ram load: {np.mean(ram_pctgs[1:])}')
     print(f'Avg ram load [GB]: {np.mean(ram_totals[1:])}')
+
+
 
 
 
