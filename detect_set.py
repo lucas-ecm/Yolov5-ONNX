@@ -7,6 +7,7 @@ from cvu.detector.yolov5 import Yolov5 as Yolov5Onnx
 from vidsz.opencv import Reader, Writer
 from cvu.utils.google_utils import gdrive_download
 from timeit import default_timer as timer
+import psutil
 
 CLASSES = [
     'missing_hole',
@@ -72,6 +73,10 @@ if __name__ == "__main__":
     inference_time = 0
     postprocess_time = 0
 
+    cpu_pctgs = []
+    ram_pctgs = []
+    ram_totals = []
+
     model = Yolov5Onnx(classes=CLASSES,
            backend=opt.backend,
            weight=opt.weights,
@@ -89,9 +94,20 @@ if __name__ == "__main__":
             model, input, output
         )
 
+        print('The CPU usage is: ', psutil.cpu_percent(2.5))
+        cpu_pctgs.append(psutil.cpu_percent(2.5))
+
+        # Getting % usage of virtual_memory ( 3rd field)
+        print('RAM memory % used:', psutil.virtual_memory()[2])
+        ram_pctgs.append(psutil.virtual_memory()[2])
+        # Getting usage of virtual_memory in GB ( 4th field)
+        print('RAM Used (GB):', psutil.virtual_memory()[3]/1000000000)
+        ram_totals.append(psutil.virtual_memory()[3]/1000000000)
+        
+
         preprocess_time += curr_pre_time
         inference_time += curr_inf_time
-        postprocess_time += curr_post_time
+        postprocess_time += curr_post_time     
 
         if opt.max_iters and count == opt.max_iters:
             break
@@ -99,6 +115,10 @@ if __name__ == "__main__":
     print(f'Preprocess_time: {preprocess_time}')
     print(f'Inference_time: {inference_time}')
     print(f'Postprocess_time: {postprocess_time}')
+
+    print(f'Avg cpu load: {np.mean(cpu_pctgs)}')
+    print(f'Avg ram load: {np.mean(ram_pctgs)}')
+    print(f'Avg ram load [GB]: {np.mean(ram_totals)}')
 
 
 
