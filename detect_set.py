@@ -94,15 +94,18 @@ if __name__ == "__main__":
             model, input, output
         )
 
-        print('The CPU usage is: ', psutil.cpu_percent())
-        cpu_pctgs.append(psutil.cpu_percent())
+        cpu_pctg = psutil.cpu_percent()
+        print('The CPU usage is: ', cpu_pctg)
+        cpu_pctgs.append(cpu_pctg)
 
         # Getting % usage of virtual_memory ( 3rd field)
-        print('RAM memory % used:', psutil.virtual_memory()[2])
-        ram_pctgs.append(psutil.virtual_memory()[2])
+        ram_pctg = psutil.virtual_memory()[2]
+        print('RAM memory % used:', ram_pctg)
+        ram_pctgs.append(ram_pctg)
         # Getting usage of virtual_memory in GB ( 4th field)
-        print('RAM Used (GB):', psutil.virtual_memory()[3]/1000000000)
-        ram_totals.append(psutil.virtual_memory()[3]/1000000000)
+        ram_total = psutil.virtual_memory()[3]/1000000000
+        print('RAM Used (GB):',ram_total )
+        ram_totals.append(ram_total)
         
 
         preprocess_time += curr_pre_time
