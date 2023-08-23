@@ -8,6 +8,7 @@ from vidsz.opencv import Reader, Writer
 from cvu.utils.google_utils import gdrive_download
 from timeit import default_timer as timer
 import psutil
+import pandas as pd
 
 CLASSES = [
     'missing_hole',
