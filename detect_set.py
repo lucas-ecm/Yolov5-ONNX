@@ -41,7 +41,7 @@ def detect_image(model, image_path, output_image):
     end = timer()
     postprocess_time = end - start
 
-    return preprocess_time, inference_time, postprocess_time
+    return preprocess_time, inference_time, postprocess_time, preds
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -76,6 +76,8 @@ if __name__ == "__main__":
     cpu_pctgs = []
     ram_pctgs = []
     ram_totals = []
+    
+    all_preds = []
 
     model = Yolov5Onnx(classes=CLASSES,
            backend=opt.backend,
@@ -90,9 +92,10 @@ if __name__ == "__main__":
         input = os.path.join(opt.input_dir, filename)
         output = os.path.join(opt.output_dir, filename)
 
-        curr_pre_time, curr_inf_time, curr_post_time = detect_image(
+        curr_pre_time, curr_inf_time, curr_post_time, preds = detect_image(
             model, input, output
         )
+        all_preds.append(preds)
 
         cpu_pctg = psutil.cpu_percent()
         print('The CPU usage is: ', cpu_pctg)
@@ -128,6 +131,9 @@ if __name__ == "__main__":
     print("Avg cpu usage (getloadavg) is : ", cpu_usage)
     print(f'Avg ram load: {np.mean(ram_pctgs[1:])}')
     print(f'Avg ram load [GB]: {np.mean(ram_totals[1:])}')
+
+    all_preds = pd.DataFrame(all_preds)
+    all_preds.to_csv(os.path.join(opt.output_dir,'csv_results.csv'), index = False)
 
 
 
